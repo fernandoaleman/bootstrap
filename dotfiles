@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+OS="$(uname -s)"
+
+if [ "$OS" = "Darwin" ]; then
+  # Install Homebrew
+  if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+
+  # Install chezmoi, zsh, age
+  echo "Installing chezmoi, zsh, age..."
+  brew install chezmoi zsh age
+
+elif [ "$OS" = "Linux" ]; then
+  # Install chezmoi
+  if ! command -v chezmoi &>/dev/null; then
+    echo "Installing chezmoi..."
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+  fi
+
+  # Install age and zsh
+  echo "Installing age and zsh..."
+  sudo pacman -S --needed --noconfirm age zsh
+
+else
+  echo "Unsupported OS: $OS"
+  exit 1
+fi
+
+echo "Done."
