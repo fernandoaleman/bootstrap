@@ -2,6 +2,12 @@
 
 Bootstrap script to set up a new macOS or Arch Linux machine with my dotfiles.
 
+## Usage
+
+```sh
+bash <(curl -fsSL https://raw.githubusercontent.com/fernandoaleman/bootstrap/master/dotfiles)
+```
+
 ## What it does
 
 The `dotfiles` script detects your operating system, installs the necessary
@@ -32,12 +38,6 @@ the private dotfiles repository, and applies the dotfiles with
 GitHub CLI stores credentials in the operating system's secure credential
 store when one is available. Without a supported credential store, it may fall
 back to storing credentials in its configuration file.
-
-## Usage
-
-```sh
-bash <(curl -fsSL https://raw.githubusercontent.com/fernandoaleman/bootstrap/master/dotfiles)
-```
 
 ## Requirements
 
