@@ -31,6 +31,9 @@ else
   exit 1
 fi
 
+# The Arch chezmoi installer places its binary in this directory.
+export PATH="$HOME/.local/bin:$PATH"
+
 # Authenticate before chezmoi tries to clone the private dotfiles repository.
 if ! gh auth status --hostname github.com >/dev/null 2>&1; then
   echo "GitHub authentication is required to access the private dotfiles repository."
