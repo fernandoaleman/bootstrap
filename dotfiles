@@ -11,9 +11,9 @@ if [ "$OS" = "Darwin" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 
-  # Install chezmoi, zsh, age
-  echo "Installing chezmoi, zsh, age..."
-  brew install chezmoi zsh age
+  # Install chezmoi, zsh, age, and GitHub CLI
+  echo "Installing chezmoi, zsh, age, and GitHub CLI..."
+  brew install chezmoi zsh age gh
 
 elif [ "$OS" = "Linux" ]; then
   # Install chezmoi
@@ -22,15 +22,30 @@ elif [ "$OS" = "Linux" ]; then
     sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
   fi
 
-  # Install age and zsh
-  echo "Installing age and zsh..."
-  sudo pacman -S --needed --noconfirm age zsh
+  # Install age, zsh, and GitHub CLI
+  echo "Installing age, zsh, and GitHub CLI..."
+  sudo pacman -S --needed --noconfirm age zsh github-cli
 
 else
   echo "Unsupported OS: $OS"
   exit 1
 fi
 
-chezmoi init --apply fernandoaleman
+# Authenticate before chezmoi tries to clone the private dotfiles repository.
+if ! gh auth status --hostname github.com >/dev/null 2>&1; then
+  echo "GitHub authentication is required to access the private dotfiles repository."
+  gh auth login --hostname github.com --git-protocol https --web
+fi
+
+gh auth setup-git --hostname github.com
+
+if ! gh repo view fernandoaleman/dotfiles --json nameWithOwner >/dev/null 2>&1; then
+  echo "Error: the authenticated GitHub account cannot access fernandoaleman/dotfiles."
+  echo "Sign in with an account that has access, then rerun this script."
+  exit 1
+fi
+
+mkdir -p "$HOME/code"
+chezmoi --source "$HOME/code/dotfiles" init --depth 1 --apply fernandoaleman
 
 echo "Done."
